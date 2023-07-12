@@ -57,7 +57,7 @@ export default function PullRefreshDemo() {
         );
         overallOffsetY.value = Math.max(
           -LOADING_H,
-          overallOffsetY.value + e.changeY,
+          overallOffsetY.value + e.changeY * 0.5,
         );
       }
     })

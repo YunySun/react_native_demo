@@ -8,12 +8,12 @@
  */
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import PullRefreshDemo from './src/pages/gesture/PullRefreshDemo';
+import Carousel from './src/pages/gesture/Carousel';
 
 export default function App() {
   return (
-    <GestureHandlerRootView>
-      <PullRefreshDemo />
+    <GestureHandlerRootView style={{flex: 1}}>
+      <Carousel />
     </GestureHandlerRootView>
   );
 }

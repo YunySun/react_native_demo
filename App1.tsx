@@ -5,6 +5,11 @@
  * @format
  */
 
+/**
+ * netstat -ano | findstr :8081 查看端口和PID
+ * taskkill /PID <PID> /F
+ */
+
 import React from 'react';
 import {
   SafeAreaView,
