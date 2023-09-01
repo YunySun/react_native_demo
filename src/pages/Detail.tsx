@@ -3,7 +3,7 @@
  * @Author: 虾饺
  * @Date: 2023-05-26 22:18:53
  * @LastEditors: 虾饺
- * @LastEditTime: 2023-05-27 11:16:16
+ * @LastEditTime: 2023-07-18 17:25:43
  * @Profile: 一个比较废柴的前端开发
  */
 import {useLayoutEffect} from 'react';
@@ -26,6 +26,7 @@ export default function Detail({route, navigation}) {
   }, [navigation]);
 
   // 点击按钮后，异步设置 多用于交互的场景
+
   function handlePress() {
     navigation.setOptions({
       title: describe,

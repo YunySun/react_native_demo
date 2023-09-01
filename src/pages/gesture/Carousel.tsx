@@ -1,18 +1,46 @@
-import {FlatList, StyleSheet} from 'react-native';
-import {useState} from 'react';
+import {FlatList, StyleSheet, View, Text, Dimensions} from 'react-native';
+import React, {useEffect, useState} from 'react';
 
 export default Carousel = () => {
-  const data = useState([
+  const width = Dimensions.get('window').width;
+  const [loop] = useState(true);
+
+  const [data] = useState([
     {classes: styles.slide1},
     {classes: styles.slide2},
     {classes: styles.slide3},
-    {classes: styles.slide4},
-    {classes: styles.slide5},
-    {classes: styles.slide6},
-    {classes: styles.slide7},
+    // {classes: styles.slide4},
+    // {classes: styles.slide5},
+    // {classes: styles.slide6},
+    // {classes: styles.slide7},
   ]);
 
-  return <FlatList data={} renderItem={} />;
+  useEffect(() => {}, []);
+
+  const renderItem = ({item, index}) => {
+    return (
+      <View style={[item.classes, {width: width, height: 300}]}>
+        <Text>{index}</Text>
+      </View>
+    );
+  };
+
+  const handleScrollEnd = event => {
+    console.log(event.nativeEvent);
+  };
+
+  return (
+    <FlatList
+      horizontal
+      data={loop ? [data[data.length - 1], ...data, data[0]] : data}
+      renderItem={renderItem}
+      pagingEnabled
+      showsHorizontalScrollIndicator={false}
+      scrollEventThrottle={16}
+      onScrollEndDrag={handleScrollEnd}
+      snapToInterval={width}
+    />
+  );
 };
 
 const styles = StyleSheet.create({
