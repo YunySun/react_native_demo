@@ -1,21 +1,39 @@
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import Carousel from './src/pages/gesture/Carousel';
-import SharePage from './src/pages/share';
-import ThreeDots from './src/pages/ThreeDot';
-import VideoTest from './src/pages/VideoTest';
-import CustomVideo from './src/pages/CustomVideo';
+import NotifService from './src/utils/NotifService';
+import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
 
-import {Alert, NativeAppEventEmitter} from 'react-native';
+import {Alert, Button, NativeAppEventEmitter} from 'react-native';
 import {useEffect} from 'react';
 
+// 查看被占用的端口
+// netstat -nao|findstr 8081
+// 关闭占用的端口
+// taskkill /F /PID 1048
+
 export default function App() {
+  const onRegister = token => {
+    Alert.alert('Registered !', JSON.stringify(token));
+    console.log('token: ', token);
+    // this.setState({registerToken: token.token, gcmRegistered: true});
+  };
+
+  const onNotif = notif => {
+    console.log(notif);
+    // Alert.alert(notif.title, notif.message);
+  };
+  const notif = new NotifService(onRegister, onNotif);
+
+  notif.checkPermission(data => {
+    console.log(data);
+  });
+
   useEffect(() => {
     var receiveRemoteNotificationSub = NativeAppEventEmitter.addListener(
       'receiveRemoteNotification',
       notification => {
         switch (notification.type) {
           case 'cid':
-            // Alert.alert('初始化获取到cid', JSON.stringify(notification));
+            console.log('初始化获取到cid' + JSON.stringify(notification));
             break;
           case 'payload':
             Alert.alert('payload 消息通知', JSON.stringify(notification));
@@ -54,11 +72,65 @@ export default function App() {
     };
   }, []);
 
+  async function onDisplayNotification() {
+    // Request permissions (required for iOS)
+    await notifee.requestPermission();
+
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+      id: 'test-channel',
+      name: 'Default Channel',
+      importance: AndroidImportance.HIGH,
+    });
+
+    // Display a notification
+    await notifee.displayNotification({
+      title: 'Notification Title',
+      body: 'Test body',
+      subtitle: 'subTitle',
+      android: {
+        channelId,
+        importance: AndroidImportance.HIGH,
+        smallIcon: 'ic_launcher', // optional, defaults to 'ic_launcher'.
+        // pressAction is needed if you want the notification to open the app when pressed
+        pressAction: {
+          id: 'test-channel',
+          launchActivity: 'default',
+        },
+      },
+    });
+  }
+
+  // notifee.onBackgroundEvent(async ({type, detail}) => {
+  //   const {notification, pressAction} = detail;
+  //
+  //   // Check if the user pressed the "Mark as read" action
+  //   if (type === EventType.ACTION_PRESS && pressAction.id === 'mark-as-read') {
+  //     // Update external API
+  //     // await fetch(`https://my-api.com/chat/${notification.data.chatId}/read`, {
+  //     //   method: 'POST',
+  //     // });
+  //     //
+  //     // // Remove the notification
+  //     // await notifee.cancelNotification(notification.id);
+  //   }
+  // });
+
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       {/*<Carousel />*/}
       {/*<VideoTest />*/}
-      <CustomVideo />
+      {/*<CustomVideo />*/}
+      <Button
+        title={'Local Notification (now)'}
+        onPress={() => {
+          notif.localNotif();
+        }}
+      />
+      <Button
+        title="Display Notification"
+        onPress={() => onDisplayNotification()}
+      />
     </GestureHandlerRootView>
   );
 }

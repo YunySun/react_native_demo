@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">AwesomeProject</string>
+    <string name="facebook_app_id">357840298492173</string>
+    <string name="facebook_client_token">0088e78ef53df91e382e39588f9ebbd6</string>
+    <string name="twitter_consumer_key">mHNUbtOqTxRoSnICDyoT03EsJ</string>
+    <string name="twitter_consumer_secret">q0yyCL1MzLG2piHKlWbOC5wwKHZXRjZ0qXicVoZBKXCWFSYacY</string>
 </resources>

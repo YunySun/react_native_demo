@@ -100,6 +100,28 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        // TODO 配置个推的三个参数
+        manifestPlaceholders = [
+                GETUI_APPID : "RPT6WKXl3ZAZVTIQqSmjp5",
+                GETUI_APP_KEY : "qv51XPUqfY7oc6Pa6OsOh4",
+                GETUI_APP_SECRET : "hvkg5gtgWJ6LyEY0snCJr",
+
+
+                MEIZU_APP_ID    : "",
+                MEIZU_APP_KEY   : "",
+
+                HUAWEI_APP_ID   : "",
+
+                XIAOMI_APP_ID   : "",
+                XIAOMI_APP_KEY  : "",
+
+                VIVO_APP_ID   : "",
+                VIVO_APP_KEY  : "",
+
+                OPPO_APP_KEY    : "",
+                OPPO_APP_SECRET : ""
+        ]
     }
 
     splits {
@@ -154,6 +176,17 @@ dependencies {
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
 
+    // TODO 引用twitter
+    implementation 'com.twitter.sdk.android:twitter:3.2.0'
+    implementation 'com.twitter.sdk.android:twitter-core:3.2.0'
+    implementation 'com.twitter.sdk.android:tweet-composer:3.2.0'
+
+//    implementation 'com.twitter.sdk.android:twitter-core:3.1.1'
+//    implementation 'com.twitter.sdk.android:tweet-ui:3.1.1'
+//    implementation 'com.twitter.sdk.android:tweet-composer:3.1.1'
+//    implementation('com.twitter.sdk.android:twitter:3.0.0')             //twitter分享
+//    implementation('com.twitter.sdk.android:tweet-composer:3.0.0')      //twitter分享，发布推文
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'
@@ -165,6 +198,13 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    // TODO react-native-getui
+//    implementation 'com.getui:gtsdk:3.2.13.0'  //个推SDK
+//    implementation 'com.getui:gtc:3.1.12.0'  //个推核心组件
+    implementation 'com.huawei.hms:push:6.11.0.300'
+
+    implementation project(':react-native-getui')
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

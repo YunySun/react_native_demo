@@ -1,6 +1,11 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!--TODO 配置react-native-push-notification-->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
       android:name=".MainApplication"
@@ -21,5 +26,120 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+
+        <!-- 配置个推的三个参数 -->
+        <meta-data android:name="PUSH_APPID" android:value="${GETUI_APPID}" tools:replace="android:value" />
+        <meta-data android:name="PUSH_APPKEY" android:value="${GETUI_APP_KEY}" tools:replace="android:value" />
+        <meta-data android:name="PUSH_APPSECRET" android:value="${GETUI_APP_SECRET}" tools:replace="android:value" />
+
+        <!--TODO 配置react-native-push-notification-->
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
+                    android:value="false"/>
+        <!-- Change the resource name to your App's accent color - or any other color you want -->
+        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
+                    android:resource="@color/white"/> <!-- or @android:color/{name} to use a standard color -->
+
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+                android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
+                android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+                   android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.facebook.sdk.ClientToken"
+                   android:value="@string/facebook_client_token"/>
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider357840298492173"
+                  android:name="com.facebook.FacebookContentProvider"
+                  android:exported="true" />
+
+        <!-- 替换为你的Twitter API Key -->
+        <meta-data
+            android:name="com.twitter.sdk.android.CONSUMER_KEY"
+            android:value="@string/twitter_consumer_key" />
+
+        <!-- 替换为你的Twitter API Secret -->
+        <meta-data
+            android:name="com.twitter.sdk.android.CONSUMER_SECRET"
+            android:value="@string/twitter_consumer_secret" />
+
+        <!--Twitter分享的接受广播-->
+        <receiver
+            android:name=".TwitterShareBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_SUCCESS" />
+                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_FAILURE" />
+            </intent-filter>
+        </receiver>
+
+<!--        <provider-->
+<!--                android:name="com.huawei.hms.update.provider.UpdateProvider"-->
+<!--                android:authorities="com.yanqingkong.m.hms.update.provider"-->
+<!--                android:exported="false"-->
+<!--                android:grantUriPermissions="true"/>-->
+<!--        <provider-->
+<!--                android:name="com.huawei.updatesdk.fileprovider.UpdateSdkFileProvider"-->
+<!--                android:authorities="com.yanqingkong.m.updateSdk.fileProvider"-->
+<!--                android:exported="false"-->
+<!--                android:grantUriPermissions="true"/>-->
+
+<!--        <service-->
+<!--                android:name="com.huawei.updatesdk.service.deamon.download.DownloadService"-->
+<!--                android:exported="false" />-->
+<!--        <receiver-->
+<!--                android:name=".push.HuaweiPushRevicer"-->
+<!--                android:permission="com.yanqingkong.m.permission.PROCESS_PUSH_MSG"-->
+<!--                android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.huawei.android.push.intent.REGISTRATION" />-->
+<!--                <action android:name="com.huawei.android.push.intent.RECEIVE" />-->
+<!--                <action android:name="com.huawei.intent.action.PUSH_DELAY_NOTIFY" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+
+<!--        <activity-->
+<!--                android:name="com.huawei.updatesdk.service.otaupdate.AppUpdateActivity"-->
+<!--                android:configChanges="orientation|screenSize"-->
+<!--                android:exported="false"-->
+<!--                android:theme="@style/upsdkDlDialog">-->
+<!--            <meta-data-->
+<!--                    android:name="hwc-theme"-->
+<!--                    android:value="androidhwext:style/Theme.Emui.Translucent.NoTitleBar" />-->
+<!--        </activity>-->
+<!--        <activity-->
+<!--                android:name="com.huawei.updatesdk.support.pm.PackageInstallerActivity"-->
+<!--                android:configChanges="orientation|keyboardHidden|screenSize"-->
+<!--                android:exported="false"-->
+<!--                android:theme="@style/upsdkDlDialog">-->
+<!--            <meta-data-->
+<!--                    android:name="hwc-theme"-->
+<!--                    android:value="androidhwext:style/Theme.Emui.Translucent" />-->
+<!--        </activity>-->
+<!--        <activity-->
+<!--                android:name="com.huawei.hms.activity.BridgeActivity"-->
+<!--                android:configChanges="orientation|locale|screenSize|layoutDirection|fontScale"-->
+<!--                android:excludeFromRecents="true"-->
+<!--                android:exported="false"-->
+<!--                android:hardwareAccelerated="true"-->
+<!--                android:theme="@android:style/Theme.Translucent">-->
+<!--            <meta-data-->
+<!--                    android:name="hwc-theme"-->
+<!--                    android:value="androidhwext:style/Theme.Emui.Translucent" />-->
+<!--        </activity>-->
+
     </application>
 </manifest>
