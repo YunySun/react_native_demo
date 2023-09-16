@@ -2,8 +2,10 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import NotifService from './src/utils/NotifService';
 import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
 
-import {Alert, Button, NativeAppEventEmitter} from 'react-native';
+import {Alert, Button, NativeAppEventEmitter, Text, View} from 'react-native';
 import {useEffect} from 'react';
+import TextSize from 'react-native-text-size';
+import pxToDp from './src/utils/pxToDp';
 
 // 查看被占用的端口
 // netstat -nao|findstr 8081
@@ -72,6 +74,63 @@ export default function App() {
     };
   }, []);
 
+  const text =
+    '这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容';
+
+  console.log(text.length);
+
+  // useEffect(() => {
+  //   calculateText(text);
+  // }, []);
+
+  const arr = [];
+  const numImages = Math.ceil(300 / 20);
+  const imageWidth = pxToDp(200);
+  // 如果文案超出图片区域，创建新的图片
+  console.log(pxToDp(200)); // 设置图片宽度
+  // const imageHeight = 100; // 设置图片高度
+  const calculateText = async (textF: string) => {
+    // 测量文案尺寸
+    const textSize = await TextSize.measure({
+      text: textF,
+      fontSize: pxToDp(16), // 设置文案字体大小
+      width: imageWidth,
+    });
+
+    if (textSize.lineCount > numImages) {
+      const testArr = await substringText(textF);
+      console.log('testArr: ', testArr);
+      return testArr;
+    }
+    return textF;
+  };
+
+  const handleCalculate = async () => {
+    const res = await calculateText(text);
+    console.log('res:', res);
+  };
+
+  const substringText = async textF => {
+    const textSize = await TextSize.measure({
+      text: textF,
+      fontSize: pxToDp(16), // 设置文案字体大小
+      width: imageWidth,
+      lineInfoForLine: numImages,
+    });
+    console.log(textSize);
+
+    const a = textF.substring(0, textSize.lineInfo.start);
+    arr.push(a);
+    const b = textF.substring(textSize.lineInfo.start);
+    if (textSize.lineCount / numImages > 2) {
+      return await substringText(b);
+    } else {
+      arr.push(b);
+      console.log(arr);
+      return arr;
+    }
+  };
+
   async function onDisplayNotification() {
     // Request permissions (required for iOS)
     await notifee.requestPermission();
@@ -131,6 +190,16 @@ export default function App() {
         title="Display Notification"
         onPress={() => onDisplayNotification()}
       />
+      <View
+        style={{
+          width: pxToDp(200),
+          height: pxToDp(300),
+        }}>
+        <Text style={{lineHeight: pxToDp(20), fontSize: pxToDp(16)}}>
+          {text}
+        </Text>
+      </View>
+      <Button title="Get Text" onPress={() => handleCalculate()} />
     </GestureHandlerRootView>
   );
 }
