@@ -1,11 +1,16 @@
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import NotifService from './src/utils/NotifService';
-import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
-
-import {Alert, Button, NativeAppEventEmitter, Text, View} from 'react-native';
-import {useEffect} from 'react';
+import notifee, {AndroidImportance} from '@notifee/react-native';
+import {
+  Alert,
+  Button,
+  NativeAppEventEmitter,
+  StyleSheet,
+  Text,
+} from 'react-native';
+import {useEffect, useState} from 'react';
 import TextSize from 'react-native-text-size';
-import pxToDp from './src/utils/pxToDp';
+import RNFS from 'react-native-fs';
 
 // 查看被占用的端口
 // netstat -nao|findstr 8081
@@ -13,6 +18,85 @@ import pxToDp from './src/utils/pxToDp';
 // taskkill /F /PID 1048
 
 export default function App() {
+  const [fontPath, setFontPath] = useState('');
+
+  function readFont() {
+    const directoryPath = `${RNFS.DocumentDirectoryPath}/fonts/`; // 替换为你要查看的目录路径
+
+    RNFS.readDir(directoryPath)
+      .then(result => {
+        console.log('Directory Listing:', result);
+
+        // 遍历目录下的文件
+        result.forEach(file => {
+          console.log('File Name:', file.name);
+          console.log('File Size (bytes):', file.size);
+          console.log('File Modification Date:', file.mtime);
+          // if (file.name === 'test.ttf') {
+          //   setFontPath(`${directoryPath}test`);
+          // }
+        });
+      })
+      .catch(error => {
+        console.error('Directory Read Error:', error);
+      });
+  }
+
+  readFont();
+
+  const downloadFile = async () => {
+    const fileUrl = 'http://192.168.8.31/QianTuMaKeShouXie.ttf'; // 文件的URL
+    const downloadDest = `${RNFS.DocumentDirectoryPath}/fonts/`; // 下载目标文件夹路径（自定义）
+    // const newFileName = 'test.ttf'; // 新文件名（包括文件扩展名）
+
+    const fontLocalPath = `${RNFS.DocumentDirectoryPath}/fonts/QianTuMaKeShouXie.ttf`;
+    // const response = await fetch(
+    //   'http://www.hongshutest.com:8000/QianTuMaKeShouXie.ttf',
+    // );
+
+    console.log('==download==');
+    try {
+      const response = await fetch(fileUrl);
+
+      console.log('response:', response);
+      if (!response.ok) {
+        throw new Error('Download failed.');
+      }
+
+      // const arrayBuffer = await response.arrayBuffer();
+
+      console.log('downloadDest:', downloadDest);
+
+      // const fontLocalPath = `${RNFS.DocumentDirectoryPath}${newFileName}`;
+
+      // const base64 = Buffer.from(arrayBuffer).toString('base64');
+      //
+      // await RNFS.writeFile(fontLocalPath, base64, 'base64');
+      //
+      // setFontPath(fontLocalPath);
+
+      const fileContent = await response.blob();
+      const reader = new FileReader();
+
+      reader.onload = async () => {
+        console.log('Download Start', `File saved to: ${downloadDest}`);
+        const base64Data = reader.result.split(',')[1]; // 从数据URL中提取base64数据部分
+
+        // 检查目标文件夹是否存在，如果不存在则创建它
+        if (!(await RNFS.exists(downloadDest))) {
+          await RNFS.mkdir(downloadDest);
+        }
+        await RNFS.writeFile(fontLocalPath, base64Data, 'base64');
+        console.log('Download Complete', `File saved to: ${fontLocalPath}`);
+        setFontPath(() => fontLocalPath);
+      };
+      //
+      reader.readAsDataURL(fileContent);
+    } catch (error) {
+      console.error('File download error:', error);
+    }
+  };
+
   const onRegister = token => {
     Alert.alert('Registered !', JSON.stringify(token));
     console.log('token: ', token);
@@ -75,7 +159,7 @@ export default function App() {
   }, []);
 
   const text =
-    '这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容';
+    '这是一段内容这是一段内容这是一段内容这是一1231232131asdsaodiasdasdioaudaiduaiouasoiduiasod段内容这lsakdla;kdla;klakdl;ask;ldkd;lkal;akdasmmdas,.sss是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容这是一段内容';
 
   console.log(text.length);
 
@@ -85,16 +169,17 @@ export default function App() {
 
   const arr = [];
   const numImages = Math.ceil(300 / 20);
-  const imageWidth = pxToDp(200);
+  const imageWidth = 200;
   // 如果文案超出图片区域，创建新的图片
-  console.log(pxToDp(200)); // 设置图片宽度
+  // console.log(pxToDp(200)); // 设置图片宽度
   // const imageHeight = 100; // 设置图片高度
   const calculateText = async (textF: string) => {
     // 测量文案尺寸
     const textSize = await TextSize.measure({
       text: textF,
-      fontSize: pxToDp(16), // 设置文案字体大小
+      fontSize: 16, // 设置文案字体大小
       width: imageWidth,
+      fontFamily: 'QianTuMaKeShouXie',
     });
 
     if (textSize.lineCount > numImages) {
@@ -113,9 +198,10 @@ export default function App() {
   const substringText = async textF => {
     const textSize = await TextSize.measure({
       text: textF,
-      fontSize: pxToDp(16), // 设置文案字体大小
+      fontSize: 16, // 设置文案字体大小
       width: imageWidth,
       lineInfoForLine: numImages,
+      fontFamily: 'QianTuMaKeShouXie',
     });
     console.log(textSize);
 
@@ -180,26 +266,36 @@ export default function App() {
       {/*<Carousel />*/}
       {/*<VideoTest />*/}
       {/*<CustomVideo />*/}
-      <Button
-        title={'Local Notification (now)'}
-        onPress={() => {
-          notif.localNotif();
-        }}
-      />
-      <Button
-        title="Display Notification"
-        onPress={() => onDisplayNotification()}
-      />
-      <View
-        style={{
-          width: pxToDp(200),
-          height: pxToDp(300),
-        }}>
-        <Text style={{lineHeight: pxToDp(20), fontSize: pxToDp(16)}}>
-          {text}
-        </Text>
-      </View>
-      <Button title="Get Text" onPress={() => handleCalculate()} />
+      {/*<Button*/}
+      {/*  title={'Local Notification (now)'}*/}
+      {/*  onPress={() => {*/}
+      {/*    notif.localNotif();*/}
+      {/*  }}*/}
+      {/*/>*/}
+      {/*<Button*/}
+      {/*  title="Display Notification"*/}
+      {/*  onPress={() => onDisplayNotification()}*/}
+      {/*/>*/}
+      <Text style={styles.text}>{text}</Text>
+
+      <Button title={'Calculate'} onPress={() => handleCalculate()} />
+
+      <Button title={'Download'} onPress={() => downloadFile()} />
+      <Text>{fontPath}</Text>
+      <Text style={{fontFamily: fontPath}}>{text}</Text>
+      {/*<CanvasTest />*/}
+      {/*<ColorTest />*/}
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    width: 200,
+    height: 300,
+    fontFamily: 'QianTuMaKeShouXie',
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  // test: {fontFamily: '千图马克手写体'},
+});
