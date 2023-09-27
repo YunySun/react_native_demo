@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@notifee/react-native": "^7.8.0",
+    "@react-native-camera-roll/camera-roll": "^5.9.0",
     "@react-native-community/slider": "^4.4.3",
     "@react-navigation/material-bottom-tabs": "^6.2.15",
     "@react-navigation/native": "^6.1.6",
@@ -39,6 +40,7 @@
     "react-native-video": "^6.0.0-alpha.7",
     "react-native-view-shot": "^3.7.0",
     "react-native-webview": "^13.6.0",
+    "react-native-zip-archive": "^6.1.0",
     "react-redux": "^8.0.5",
     "reanimated-color-picker": "^2.3.4",
     "recyclerlistview": "^4.2.0",
