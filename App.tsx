@@ -1,6 +1,7 @@
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import MyDownLoad from './src/pages/Download';
 import React from 'react';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import HandleGesture from './src/pages/gesture/handleGesture';
 
 // 查看被占用的端口
 // netstat -nao|findstr 8081
@@ -9,8 +10,11 @@ import React from 'react';
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <MyDownLoad />
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{flex: 1}}>
+        {/*<MyDownLoad />*/}
+        <HandleGesture />
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
