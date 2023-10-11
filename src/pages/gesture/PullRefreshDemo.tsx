@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
+import {StyleSheet, Text, useWindowDimensions, View} from 'react-native';
 import React from 'react';
 import Animated, {
   useAnimatedScrollHandler,
@@ -28,10 +28,12 @@ export default function PullRefreshDemo() {
   const tapGesture = Gesture.Tap()
     .onTouchesMove((_, manager) => {
       // 如果ScrollView容器没有顶到屏幕顶部
+      console.log('tap: ', overallOffsetY.value);
       if (LOADING_H + overallOffsetY.value === 0) {
         // 设置Tap手势为FAILED
         manager.fail();
       } else {
+        console.log('tap: ', overallOffsetY.value);
         // 其他情况则设置为ACTIVE 因为tap手势触发了 所以内部也会调用
         manager.activate();
       }
@@ -49,7 +51,10 @@ export default function PullRefreshDemo() {
     .onChange(e => {
       console.log('拖拽onChange事件： ', e, overallOffsetY.value);
       // 拖拽动画
-      if (scrollY.value === 0 || overallOffsetY.value !== -LOADING_H) {
+      if (
+        (scrollY.value === 0 || overallOffsetY.value !== -LOADING_H) &&
+        overallOffsetY.value <= 160
+      ) {
         // 当滚动的位置在0的时候 下拉更新整体视图的偏移
         console.log(
           '滚动的位置是0或者整体的位置不是在-LOADING_H的时候：',

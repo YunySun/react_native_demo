@@ -2,7 +2,7 @@ import {Pressable} from 'react-native';
 import Text from '../../../Components/Text';
 import {Styles} from '../Styles';
 
-export default function ListItem({item, viewType}) {
+export default function ListItem({item}) {
   console.debug('render item: ', item.id);
   return (
     <Pressable

@@ -1,15 +1,11 @@
 import ListItem from './components/ListItem';
-import {FlatList} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 
-/*
- * @Description:
- * @Author: 虾饺
- * @Date: 2023-05-27 16:27:00
- * @LastEditors: 虾饺
- * @LastEditTime: 2023-05-27 18:23:44
- * @Profile: 一个比较废柴的前端开发
- */
 const NUM_ITEMS = 1000;
+
 function makeContent(nItems: number) {
   return Array(nItems)
     .fill(1)
@@ -29,17 +25,41 @@ function getItemLayout(_, index) {
 const DATA = makeContent(NUM_ITEMS);
 
 export default function FastList() {
+  const [refreshing, setRefreshing] = useState(false);
   const renderItem = ({item}) => {
     return <ListItem item={item} />;
   };
 
+  const tapGesture = Gesture.Pan()
+    .onStart(() => {})
+    .onUpdate(e => {
+      console.log(e);
+    });
+
   return (
-    <FlatList
-      debug={true}
-      data={DATA}
-      keyExtractor={item => item.id.toString()}
-      renderItem={renderItem}
-      getItemLayout={getItemLayout}
-    />
+    <GestureDetector gesture={tapGesture}>
+      <Animated.View style={{flex: 1}}>
+        <FlatList
+          debug={true}
+          data={DATA}
+          keyExtractor={item => item.id.toString()}
+          renderItem={renderItem}
+          getItemLayout={getItemLayout}
+          refreshControl={
+            <View style={{backgroundColor: 'lightgray', padding: 20}}>
+              <Text>{refreshing ? '正在刷新...' : '下拉刷新'}</Text>
+            </View>
+          }
+        />
+      </Animated.View>
+    </GestureDetector>
+  );
+}
+
+function CustomRefreshControl() {
+  return (
+    <View style={{flex: 1}}>
+      <Text>下拉刷新</Text>
+    </View>
   );
 }
